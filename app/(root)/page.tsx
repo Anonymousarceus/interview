@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import InterviewCard from "@/components/InterviewCard";
+import InterviewHistory from "@/components/InterviewHistory";
 
 import { auth } from "@/firebase/client";
 import { User } from "firebase/auth";
@@ -10,6 +11,7 @@ import {
   getInterviewsByUserId,
   getLatestInterviews,
 } from "@/lib/actions/general.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
 async function Home() {
   const user = auth.currentUser as User | null;

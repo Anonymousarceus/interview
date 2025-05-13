@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { db } from "@/firebase/client";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
@@ -140,9 +142,26 @@ const Agent = ({
     }
   };
 
-  const handleDisconnect = () => {
+  const saveInterviewToFirebase = async () => {
+    try {
+      const interviewsRef = collection(db, 'interviews');
+      await addDoc(interviewsRef, {
+        userId: userId,
+        userName: userName,
+        transcript: messages,
+        timestamp: serverTimestamp(),
+        type: type
+      });
+      console.log('Interview saved successfully');
+    } catch (error) {
+      console.error('Error saving interview:', error);
+    }
+  };
+
+  const handleDisconnect = async () => {
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
+    await saveInterviewToFirebase();
   };
 
   return (
